@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # PROJECT_NAME: AinA __init__.py
-# CREATE_TIME: 2024/7/22 16:29
+# CREATE_TIME: 2024/7/23 17:53
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: renoyuan
-# note: api
-from .api import api_router
-import os,sys
-
-ALL=["api_router"]
-
-
+# note: Retrieval-Augmented Generation (RAG)

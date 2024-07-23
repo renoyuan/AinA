@@ -24,8 +24,14 @@ class ModelBase(object):
     def predict(self, *args, **kwargs):
         raise NotImplementedError("Subclasses must implement this method")
 
+    @abstractmethod
+    def predict_stream(self, *args, **kwargs):
+        raise NotImplementedError("Subclasses must implement this method")
 
-class QWenModelBase(ModelBase):
+
+class LocalModel(ModelBase):
+    pass
+class QWenModelBase(LocalModel):
 
     @abstractmethod
     def __init__(self, *args, **kwargs):
@@ -124,6 +130,8 @@ class QWenModelBase(ModelBase):
         for new_text in streamer:
             yield new_text
 
+    def predict_stream(self):
+        pass
     def predict(self, *args, **kwargs):
 
         # Run chat.
@@ -145,7 +153,7 @@ class QWenModelBase(ModelBase):
         return response
 
 
-class HTTPModelBase(object):
+class HTTPModelBase(ModelBase):
     @abstractmethod
     def __init__(self, *args, **kwargs):
         """create predictor"""

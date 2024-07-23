@@ -2,10 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.idea/*
 # C extensions
 *.so
-
+aina/config.toml
+assets/qwen
 # Distribution / packaging
 .Python
 build/
