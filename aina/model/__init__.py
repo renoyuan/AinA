@@ -5,3 +5,5 @@
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: renoyuan
 # note:
+from .model import ModelBase,HTTPModelBase,QWenModelBase
+ALL=["ModelBase","HTTPModelBase","QWenModelBase"]

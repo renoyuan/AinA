@@ -1,0 +1,3 @@
+use_model="qwen"
+[qwen]
+model_path=""
