@@ -42,10 +42,10 @@ class LocalModel(ModelBase):
 
 class QWenModel(LocalModel):
 
-    @abstractmethod
+
     def __init__(self, *args, **kwargs):
         """create predictor"""
-        super.__init__(*args, **kwargs)
+        super().__init__(QWenModel,*args, **kwargs)
         print("create qwen predictor")
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer

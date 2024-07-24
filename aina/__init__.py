@@ -5,4 +5,4 @@
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: renoyuan
 # note:
-__version__="v0.0.1"
+__version__="v0.1.0"
