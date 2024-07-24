@@ -1,3 +1,6 @@
 use_model="qwen"
 [qwen]
 model_path=""
+[qianfan]
+access_key=""
+secret_key=""

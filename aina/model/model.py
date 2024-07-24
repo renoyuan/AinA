@@ -15,10 +15,17 @@ from threading import Thread
 
 
 class ModelBase(object):
-    @abstractmethod
+
     def __init__(self, *args, **kwargs):
         """create predictor"""
-        raise NotImplementedError("Subclasses must implement this method")
+        self.msg = kwargs["msg"]
+
+    def add_history(self, session_id, role, text):
+        session = self.msg.get_session(session_id)
+        msg = {"role": role,
+               "content": text}
+        session.append(msg)
+        self.msg.put_session(session_id,session)
 
     @abstractmethod
     def predict(self, *args, **kwargs):
@@ -31,11 +38,14 @@ class ModelBase(object):
 
 class LocalModel(ModelBase):
     pass
-class QWenModelBase(LocalModel):
+
+
+class QWenModel(LocalModel):
 
     @abstractmethod
     def __init__(self, *args, **kwargs):
         """create predictor"""
+        super.__init__(*args, **kwargs)
         print("create qwen predictor")
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
@@ -132,6 +142,7 @@ class QWenModelBase(LocalModel):
 
     def predict_stream(self):
         pass
+
     def predict(self, *args, **kwargs):
 
         # Run chat.
@@ -154,11 +165,35 @@ class QWenModelBase(LocalModel):
 
 
 class HTTPModelBase(ModelBase):
-    @abstractmethod
-    def __init__(self, *args, **kwargs):
-        """create predictor"""
-        raise NotImplementedError("Subclasses must implement this method")
+    pass
 
-    @abstractmethod
+
+class QianFanModel(HTTPModelBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(QianFanModel, *args, **kwargs)
+        import qianfan
+        self.qianfan = qianfan
+        self.history = []  # 這個後續要改造
+        model_name = kwargs.get("model_name", "ERNIE-3.5-8K")
+
+        # 也可以在命令行运行 qianfan chat --list-model 查看
+        self.chat_comp = self.qianfan.ChatCompletion(model=model_name)
+
     def predict(self, *args, **kwargs):
-        raise NotImplementedError("Subclasses must implement this method")
+        query = kwargs.get("query")
+        session_id = kwargs.get("session_id")
+
+        self.add_history(session_id, "user", query)
+        msg = self.msg.get_session(session_id)
+        print(msg)
+        resp = self.chat_comp.do(
+            messages=msg,
+            # （可选）设置模型参数，与 API 参数一致
+            top_p=0.8,
+            temperature=0.9,
+            penalty_score=1.0,
+        )
+
+        resp_text = resp.get("result", "")
+        self.add_history(session_id, "assistant", resp_text)
+        return resp_text
