@@ -12,15 +12,15 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="AinA",
+    name="reno_aina",
     version=__version__,
     author="renoyuan",
     author_email="renoyuan@foxmail.com",
-    description="easy operate OFD",
+    description="reno aina",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/renoyuan/AinA",
-    packages=setuptools.find_packages(exclude=["README.md", ".vscode", ".vscode.*", ".git", ".git.*"]),
+    packages=setuptools.find_packages(exclude=["README.md", ".vscode", ".vscode.*", ".git", ".git.*","doc","assets","test","gui"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
@@ -35,5 +35,5 @@ setuptools.setup(
         "transformers>=4.42.4",
         "gradio>=4.39.0"
     ],
-    python_requires='>=3.8',
+    python_requires='>=3.11',
 )
