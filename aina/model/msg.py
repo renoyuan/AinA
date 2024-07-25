@@ -17,7 +17,7 @@ class Msg(object):
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
-            cls._instance = object.__new__(cls, *args, **kwargs)
+            cls._instance = object.__new__(cls)
         return cls._instance
 
     def get_session(self, session_id: str) -> list:
@@ -35,3 +35,6 @@ class Msg(object):
 
     def new_session(self, session_id):
         self.session[session_id] = []
+
+if __name__ =="__main__":
+    Msg()
