@@ -1,0 +1,10 @@
+use_model = ["qianfan","qwen"]
+
+[qwen]
+    model_path=""
+    model_type="local"
+[qianfan]
+    access_key=""
+    secret_key=""
+    model_name="ERNIE-Speed-128K"
+    model_type="api"

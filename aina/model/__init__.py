@@ -14,23 +14,30 @@ from .msg import Msg
 with open('config.toml', 'rb') as f:
     config = tomllib.load(f)
 llm_model = None
-
+LLM_MAP = {}
 msg = Msg()
-# 访问配置
-if config["use_model"] == 'qwen':
-    print("init qwen model")
-    model_path = config['qwen']['model_path']
-    llm_model = QWenModel(model_path=model_path, msg=msg)
-elif config["use_model"] == 'qianfan':
-    print("init qwen model")
-    os.environ["QIANFAN_ACCESS_KEY"] = config["qianfan"]["access_key"]
-    os.environ["QIANFAN_SECRET_KEY"] = config["qianfan"]["secret_key"]
-    model_name = config["qianfan"]["model_name"]
-    llm_model = QianFanModel(model_name=model_name, msg=msg)
-def get_model():
-    return llm_model
+use_model = config["use_model"]
+class LLMModel(object):
+    def __init__(self):
+        for i in use_model:
+            if i == 'qwen':
+                print("init qwen model")
+                model_path = config['qwen']['model_path']
+                LLM_MAP['qwen'] = QWenModel(model_path=model_path, msg=msg)
+            elif i == 'qianfan':
+                print("init qwen model")
+                os.environ["QIANFAN_ACCESS_KEY"] = config["qianfan"]["access_key"]
+                os.environ["QIANFAN_SECRET_KEY"] = config["qianfan"]["secret_key"]
+                model_name = config["qianfan"]["model_name"]
+                LLM_MAP['qianfan'] = QianFanModel(model_name=model_name, msg=msg)
+    def get_model(self,key="qwen"):
+        return LLM_MAP[key]
+    def get_use_model(self):
+        return use_model
+
+llmModel = LLMModel()
 def get_msg():
     return msg
 
 
-ALL = ["ModelBase", "HTTPModelBase", "QWenModelBase", "get_model"]
+ALL = ["ModelBase", "HTTPModelBase", "QWenModelBase", "get_model", "llmModel"]

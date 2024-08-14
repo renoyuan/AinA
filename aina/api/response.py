@@ -28,6 +28,8 @@ code_map = {
     617: ("任务失败", 0),
     618: ("fastdfs错误", 0),
     619: ("场景不存在", 0),
+    620: ("message is null", 0),
+    621: ("model key is error", 0),
 
 }
 

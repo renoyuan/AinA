@@ -6,60 +6,68 @@
 # AUTHOR: renoyuan
 # note: pip install selenium webdriver_manager requests
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from abc import abstractmethod
+
+
+class SearchBase(object):
+    @abstractmethod
+    def __init__(self, *args, **kwargs):
+        raise NotImplementedError("Subclasses must implement this method")
+
+    @abstractmethod
+    def search(self, *args, **kwargs):
+        raise NotImplementedError("Subclasses must implement this method")
+
+
+class BaiduSearch(SearchBase):
+    def __init__(self,):
+        "POST"
+        """
+        参数名	类型	是否必填	说明
+        Content-Type	-	是	application/json;charset=UTF-8
+        X-Gw-Ak	string	是	推荐服务鉴权信息
+        Alias-Name	string	是	推荐服务应用名
+        """
+        url = "http://airec.baidu.com/airec/api/search/main"
+
+
+class BingSearch(SearchBase):
+    pass
+
+
+class GoogleSearch(SearchBase):
+    pass
+
 import requests
-import time
 
+def google_custom_search(query, api_key, cse_id, **kwargs):
+    service_url = 'https://www.googleapis.com/customsearch/v1'
+    params = {
+        'q': query,
+        'key': api_key,
+        'cx': cse_id,
+    }
+    params.update(kwargs)  # 更新额外的参数，例如num=10来获取10个结果
+    response = requests.get(service_url, params=params)
+    return response.json()
 
-def bing_search(query):
-    try:
-        # 构造搜索 URL
-        url = f"https://www.bing.com/search?form=QBRE&q={requests.utils.quote(query)}&cc=US"
+# 替换以下值为你自己的API密钥和CX值
+api_key = "YOUR_API_KEY"
+cse_id = "YOUR_CSE_ID"
 
-        # 启动 Chrome 浏览器
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service)
+# 调用函数
+results = google_custom_search(
+    '智能体',
+    api_key=api_key,
+    cse_id=cse_id,
+    num=10  # 可选参数，指定返回的结果数量
+)
 
-        # 访问页面
-        driver.get(url)
-
-        # 等待页面加载完成
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "b_results"))
-        )
-
-        # 获取搜索结果
-        results = driver.find_elements(By.CSS_SELECTOR, "#b_results .b_algo")
-
-        summaries = []
-        for result in results[:5]:  # 只获取前五个结果
-            try:
-                abstract_element = result.find_element(By.CSS_SELECTOR, ".b_caption > p")
-                link_element = result.find_element(By.TAG_NAME, "a")
-                href = link_element.get_attribute("href")
-                title = link_element.text
-
-                abstract = abstract_element.text if abstract_element else ""
-
-                summaries.append({"href": href, "title": title, "abstract": abstract})
-            except Exception as e:
-                print(f"Error processing result: {e}")
-
-        # 关闭浏览器
-        driver.quit()
-
-        print(summaries)
-        return summaries
-
-    except Exception as error:
-        print("An error occurred:", error)
-
-
+# 打印结果
+for item in results['items']:
+    print(item['title'])
+    print(item['link'])
+    print('-' * 50)
 # 运行函数
 if __name__ == "__main__":
-    bing_search("特朗普")
+    pass

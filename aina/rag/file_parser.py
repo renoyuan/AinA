@@ -5,9 +5,21 @@
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: renoyuan
 # note: 文档解析
+import fitz
 
 class FileParserBase(object):
-    pass
+    """file2textBase"""
+    def read(self):
+        pass
+    def format(self,page_list):
+        text = ""
+        for idx, page in enumerate(page_list):
+            for line in page:
+                text += line
+            text += f"\npage{idx}\n"
+        return text
+
+
 
 class PDFParserParser(FileParserBase):
     pass
